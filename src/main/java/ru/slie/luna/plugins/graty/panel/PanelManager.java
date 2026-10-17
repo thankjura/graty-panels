@@ -7,6 +7,9 @@ import ru.slie.luna.db.filter.Filters;
 import ru.slie.luna.db.query.DeleteResult;
 import ru.slie.luna.db.query.FindOptions;
 import ru.slie.luna.db.query.Query;
+import ru.slie.luna.exception.ValidateException;
+import ru.slie.luna.issue.IssueContext;
+import ru.slie.luna.locale.I18nResolver;
 import ru.slie.luna.plugins.graty.db.PanelEntity;
 import ru.slie.luna.plugins.graty.rest.request.PanelRequest;
 import ru.slie.luna.regolith.ActiveDocManager;
@@ -24,9 +27,12 @@ import java.util.Optional;
 @Transactional
 public class PanelManager {
     private final ActiveDocManager activeDocManager;
+    private final I18nResolver i18n;
 
-    public PanelManager(ActiveDocManager activeDocManager) {
+    public PanelManager(ActiveDocManager activeDocManager,
+                        I18nResolver i18n) {
         this.activeDocManager = activeDocManager;
+        this.i18n = i18n;
     }
 
     private Panel wrap(PanelEntity entity) {
@@ -41,6 +47,16 @@ public class PanelManager {
         return Optional.of(wrap(entity));
     }
 
+    private void validate(PanelEntity entity) throws ValidateException {
+        ValidateException exception = new ValidateException();
+        if (entity.getName() == null || entity.getName().isEmpty()) {
+            exception.addError("name", i18n.getText("graty.field.name.required"));
+        }
+
+
+        exception.raise();
+    }
+
     public Optional<Panel> getById(Long id) {
         return wrapNullable(activeDocManager.getById(PanelEntity.class, id));
     }
@@ -48,11 +64,19 @@ public class PanelManager {
     public List<Panel> getForContext(Long projectId, Long issueTypeId) {
         FindOptions option = new FindOptions().sort("priority");
         return activeDocManager.query(PanelEntity.class)
-                       .filter(Filters.eq("projectIds", projectId), Filters.eq("issueTypeIds", issueTypeId))
+                       .filter(Filters.eq("projectIds", projectId),
+                               Filters.eq("issueTypeIds", issueTypeId))
                        .list(option)
                        .stream()
                        .map(this::wrap)
                        .toList();
+    }
+
+    public boolean hasForContext(IssueContext context) {
+        return activeDocManager.query(PanelEntity.class)
+                       .filter(Filters.eq("projectIds", context.getProjectId()),
+                               Filters.eq("issueTypeIds", context.getIssueTypeId()))
+                       .count() > 0;
     }
 
     public SearchResult<Panel> search(PanelSearchParams params) {
@@ -78,16 +102,17 @@ public class PanelManager {
         return new SearchResultList<>(total, out, params);
     }
 
-    public Panel create(User author, PanelRequest request) {
+    public Panel create(User author, PanelRequest request) throws ValidateException {
         // TODO: validate
         PanelEntity entity = new PanelEntity(author.getId(), request.getName(), request.getDisplayName(), request.getQs(), request.getPriority());
         entity.setProjectIds(request.getProjectIds());
         entity.setIssueTypeIds(request.getIssueTypeIds());
+        validate(entity);
         activeDocManager.save(entity);
         return wrap(entity);
     }
 
-    public void update(User updater, Panel panel, PanelRequest request) {
+    public void update(User updater, Panel panel, PanelRequest request) throws ValidateException {
         PanelEntity entity = activeDocManager.getById(PanelEntity.class, panel.getId());
         if (entity == null) {
             return;
@@ -101,11 +126,12 @@ public class PanelManager {
         entity.setIssueTypeIds(request.getIssueTypeIds());
         entity.setUpdaterId(updater.getId());
         entity.setUpdated(LocalDateTime.now());
+        validate(entity);
         activeDocManager.save(entity);
         panel.update(entity);
     }
 
-    public void patch(User updater, Panel panel, Map<String, Object> request) {
+    public void patch(User updater, Panel panel, Map<String, Object> request) throws ValidateException {
         PanelEntity entity = activeDocManager.getById(PanelEntity.class, panel.getId());
         if (entity == null) {
             return;
@@ -127,6 +153,7 @@ public class PanelManager {
 
         entity.setUpdaterId(updater.getId());
         entity.setUpdated(LocalDateTime.now());
+        validate(entity);
         activeDocManager.save(entity);
         panel.update(entity);
     }

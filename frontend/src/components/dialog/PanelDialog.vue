@@ -3,18 +3,27 @@ import {
   $notify,
   BaseDialog,
   type Errors,
-  issueTypeService,
-  type IssueTypeValueDto,
-  projectService,
-  type ProjectValueDto,
   MultiSelect,
-  ButtonBusy
+  ButtonBusy,
+  type ProjectValueDto,
+  type IssueTypeValueDto
 } from "luna";
 import type { PanelDto, PanelValueDto } from "@/interfaces/panel.ts";
-import { onMounted, ref, useTemplateRef } from "vue";
+import { type PropType, ref, useTemplateRef } from "vue";
 import type { ComponentExposed } from "vue-component-type-helpers";
-import { panelService } from "@/service/panelService.ts";
+import { adminPanelService } from "@/service/adminPanelService.ts";
 import { $i18n } from "@/utils/i18n.ts";
+
+defineProps({
+  projects: {
+    required: true,
+    type: Array as PropType<Array<ProjectValueDto>>,
+  },
+  issueTypes: {
+    required: true,
+    type: Array as PropType<Array<IssueTypeValueDto>>
+  },
+})
 
 const emits = defineEmits({
   created: (_panel: PanelDto) => true,
@@ -25,8 +34,7 @@ const busy = ref(false);
 const panel = ref<Partial<PanelDto>>({});
 const dialog = useTemplateRef<ComponentExposed<typeof BaseDialog>>('dialog');
 const errors = ref<Errors>({});
-const projects = ref<Array<ProjectValueDto>>([]);
-const issueTypes = ref<Array<IssueTypeValueDto>>([]);
+
 
 const hide = () => {
   dialog.value.hide();
@@ -41,7 +49,7 @@ const edit = (panelValue: PanelValueDto) => {
   busy.value = true;
   panel.value = {id: panelValue.id, name: panelValue.name, displayName: panelValue.displayName};
   dialog.value.show();
-  panelService.getById(panelValue.id).then((data) => {
+  adminPanelService.getById(panelValue.id).then((data) => {
     panel.value = data.data;
   }).catch(() => {
     $notify.error($i18n.t("Failed load panel"));
@@ -56,7 +64,7 @@ const submit = () => {
   }
   busy.value = true;
   if (panel.value?.id) {
-    panelService.update(panel.value.id, {
+    adminPanelService.update(panel.value.id, {
       name: panel.value.name,
       displayName: panel.value.displayName,
       projectIds: panel.value.projectIds,
@@ -75,7 +83,7 @@ const submit = () => {
       busy.value = false;
     });
   } else {
-    panelService.create({
+    adminPanelService.create({
       name: panel.value.name,
       displayName: panel.value.displayName,
       projectIds: panel.value.projectIds,
@@ -96,14 +104,7 @@ const submit = () => {
   }
 }
 
-onMounted(() => {
-  projectService.getAll().then((data) => {
-    projects.value = data.data;
-  });
-  issueTypeService.getAll().then((data) => {
-    issueTypes.value = data.data;
-  });
-});
+
 defineExpose({
   create,
   edit
@@ -135,8 +136,13 @@ defineExpose({
         </div>
         <div class="field-group">
           <label for="panel-projects">{{ $i18n.t("Projects") }}</label>
-          <MultiSelect id="panel-qs" v-model="panel.projectIds" :options="projects" :show-icon="true"></MultiSelect>
-          <div class="error" v-if="errors['qs']">{{ errors['qs'] }}</div>
+          <MultiSelect id="panel-projects" v-model="panel.projectIds" :options="projects" :show-icon="true"></MultiSelect>
+          <div class="error" v-if="errors['projects']">{{ errors['projects'] }}</div>
+        </div>
+        <div class="field-group">
+          <label for="panel-issue-types">{{ $i18n.t("Issue types") }}</label>
+          <MultiSelect id="panel-issue-types" v-model="panel.issueTypeIds" :options="issueTypes" :show-icon="true"></MultiSelect>
+          <div class="error" v-if="errors['issueTypes']">{{ errors['issueTypes'] }}</div>
         </div>
       </form>
     </template>

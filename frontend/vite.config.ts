@@ -30,7 +30,8 @@ export default defineConfig({
     minify: 'terser',
     lib: {
       entry: [
-      	resolve(import.meta.dirname, 'src/views/GratyPanelsView.vue'),
+      	resolve(import.meta.dirname, 'src/views/admin/GratyPanelsView.vue'),
+      	resolve(import.meta.dirname, 'src/views/issue/GratyIssuePanelView.vue'),
       ],
       formats: ['es'],
     },

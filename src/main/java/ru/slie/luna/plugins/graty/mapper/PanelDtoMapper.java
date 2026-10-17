@@ -16,13 +16,20 @@ public class PanelDtoMapper {
         this.userManager = userManager;
     }
 
-    private static PanelValueDto wrapValue(Panel panel) {
+    private static PanelValueDto mapValue(Panel panel) {
         return PanelValueDto.from(panel);
     }
 
-    public static SearchResult<PanelValueDto> map(SearchResult<Panel> searchResult) {
+    public static SearchResult<PanelValueDto> mapValue(SearchResult<Panel> searchResult) {
         return new SearchResultList<>(searchResult.getTotal(),
-                searchResult.getResults().stream().map(PanelDtoMapper::wrapValue).toList(),
+                searchResult.getResults().stream().map(PanelDtoMapper::mapValue).toList(),
+                searchResult.searchParams());
+    }
+
+
+    public SearchResult<PanelDto> map(SearchResult<Panel> searchResult) {
+        return new SearchResultList<>(searchResult.getTotal(),
+                searchResult.getResults().stream().map(this::map).toList(),
                 searchResult.searchParams());
     }
 

@@ -1,12 +1,12 @@
-package ru.slie.luna.plugins.graty.rest;
+package ru.slie.luna.plugins.graty.rest.admin;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.slie.luna.db.query.DeleteResult;
+import ru.slie.luna.exception.ValidateException;
 import ru.slie.luna.permission.GlobalPermissionManager;
 import ru.slie.luna.plugins.graty.dto.PanelDto;
-import ru.slie.luna.plugins.graty.dto.PanelValueDto;
 import ru.slie.luna.plugins.graty.mapper.PanelDtoMapper;
 import ru.slie.luna.plugins.graty.panel.Panel;
 import ru.slie.luna.plugins.graty.panel.PanelManager;
@@ -20,17 +20,17 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/graty/panels")
-public class PanelRest {
+@RequestMapping("/graty/admin/panels")
+public class AdminPanelRest {
     private final PanelManager panelManager;
     private final AuthenticationContext authenticationContext;
     private final GlobalPermissionManager globalPermissionManager;
     private final PanelDtoMapper panelDtoMapper;
 
-    public PanelRest(PanelManager panelManager,
-                     AuthenticationContext authenticationContext,
-                     GlobalPermissionManager globalPermissionManager,
-                     PanelDtoMapper panelDtoMapper) {
+    public AdminPanelRest(PanelManager panelManager,
+                          AuthenticationContext authenticationContext,
+                          GlobalPermissionManager globalPermissionManager,
+                          PanelDtoMapper panelDtoMapper) {
         this.panelManager = panelManager;
         this.authenticationContext = authenticationContext;
         this.globalPermissionManager = globalPermissionManager;
@@ -38,17 +38,17 @@ public class PanelRest {
     }
 
     @GetMapping({"/", ""})
-    public SearchResult<PanelValueDto> search(SearchTermRequest request) {
+    public SearchResult<PanelDto> search(SearchTermRequest request) {
         User user = authenticationContext.getCurrentUser();
         if (!globalPermissionManager.hasAdminPerms(user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
-        return PanelDtoMapper.map(panelManager.search(request.getSearchParams()));
+        return panelDtoMapper.map(panelManager.search(request.getSearchParams()));
     }
 
     @PostMapping({"/", ""})
-    public PanelDto create(@RequestBody PanelRequest request) {
+    public PanelDto create(@RequestBody PanelRequest request) throws ValidateException {
         User user = authenticationContext.getCurrentUser();
         if (!globalPermissionManager.hasAdminPerms(user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -69,7 +69,7 @@ public class PanelRest {
     }
 
     @PatchMapping("/{id}")
-    public PanelDto patch(@PathVariable("id") Long panelId, @RequestBody Map<String, Object> request) {
+    public PanelDto patch(@PathVariable("id") Long panelId, @RequestBody Map<String, Object> request) throws ValidateException {
         User user = authenticationContext.getCurrentUser();
         if (!globalPermissionManager.hasAdminPerms(user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -81,7 +81,7 @@ public class PanelRest {
     }
 
     @PutMapping("/{id}")
-    public PanelDto put(@PathVariable("id") Long panelId, @RequestBody PanelRequest request) {
+    public PanelDto put(@PathVariable("id") Long panelId, @RequestBody PanelRequest request) throws ValidateException {
         User user = authenticationContext.getCurrentUser();
         if (!globalPermissionManager.hasAdminPerms(user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);

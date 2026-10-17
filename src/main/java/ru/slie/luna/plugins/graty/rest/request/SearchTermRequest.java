@@ -44,4 +44,24 @@ public class SearchTermRequest {
                        .projectIds(getProjectIds())
                        .issueTypeIds(getIssueTypeIds());
     }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
+    public void setProjectIds(Set<Long> projectIds) {
+        this.projectIds = projectIds;
+    }
+
+    public void setIssueTypeIds(Set<Long> issueTypeIds) {
+        this.issueTypeIds = issueTypeIds;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
 }

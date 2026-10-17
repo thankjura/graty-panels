@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/thankjura/luna-schemas/refs/heads/master/luna-plugin.schema.json?v12
+# yaml-language-server: $schema=https://raw.githubusercontent.com/thankjura/luna-schemas/refs/heads/master/luna-plugin.schema.json?v13
 
 key: ${project.groupId}.${project.artifactId} # Resolved from pom.xml
 name: ${project.name}
@@ -35,3 +35,9 @@ webItems:
   - key: GratyAdminPanelWebItem
     name: Demo web item
     className: ru.slie.luna.plugins.graty.web.GratyAdminPanelWebItem
+webPanels:
+  - key: GratyWebPanel
+    name: Graty web panel
+    className: ru.slie.luna.plugins.graty.web.GratyWebPanel
+    webComponent:
+      path: frontend/GratyIssuePanelView.js
