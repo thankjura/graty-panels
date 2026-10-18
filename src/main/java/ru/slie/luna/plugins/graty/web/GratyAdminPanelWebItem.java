@@ -2,6 +2,7 @@ package ru.slie.luna.plugins.graty.web;
 
 import org.springframework.stereotype.Component;
 import ru.slie.luna.locale.I18nResolver;
+import ru.slie.luna.web.WebContext;
 import ru.slie.luna.web.WebItem;
 
 import java.util.Map;
@@ -27,6 +28,11 @@ public class GratyAdminPanelWebItem implements WebItem {
     @Override
     public int getOrder() {
         return 0;
+    }
+
+    @Override
+    public boolean isVisible(WebContext context) {
+        return true;
     }
 
     @Override

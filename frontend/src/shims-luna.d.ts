@@ -6,6 +6,9 @@ declare module 'luna' {
   import { AxiosResponse } from "axios";
   import { ComputedRef } from "@vue/reactivity";
 
+  type T = any;
+  type K = any;
+
   export const ColorStrategy: {
     readonly Priority: "priority";
     readonly Query: "queryString";
@@ -224,17 +227,7 @@ declare module 'luna' {
     {},{}, {}, {}, {}, {}, {}, {}, string, {
       option?: any
     }, {}, {}, SlotsType<{}>>;
-  export const CheckBoxesComponent: <T extends BaseOption>(
-    props: {
-      optionGroups: OptionsGroup<T>[];
-      valueKey?: keyof T | undefined;
-      disabled?: boolean | undefined;
-      busyValue?: string | number | undefined;
-      emitsOnly?: boolean | undefined;
-      maxHeight?: string | undefined;
-      modelValue?: (string | number)[] | undefined;
-    }
-  ) => DefineComponent<
+  export const CheckBoxesComponent: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
       'select': [value: T]
       'remove': [value: string | number]
@@ -318,36 +311,16 @@ declare module 'luna' {
       'update:error': [value: string | undefined]
     }, 'update:modelValue' | 'update:error', {
       disabled?: boolean | undefined
+      maxResult?: number | undefined
       modelValue?: string | undefined
       error?: string | undefined
+      initFunc?: (() => Promise<QsFormData>) | undefined
     }, {}, {}, SlotsType<{}>>;
   export const QsViewer: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {}, string, {
       qs?: string | undefined
     }, {}, {}, SlotsType<{}>>;
-  export const SingleSelect: <T extends BaseOption, K extends keyof T = 'id'>(
-    props: {
-      options: any;
-      modelData?: T | undefined;
-      showIcons?: boolean | undefined;
-      minTagLen?: number | undefined;
-      tagLabel?: ((term: string) => string) | undefined;
-      suggestionKey?: keyof T | undefined;
-      valueKey?: (keyof T & K) | undefined;
-      labelKey?: keyof T | ((item: T) => string) | undefined;
-      name?: string | undefined;
-      cropSuggestions?: boolean | undefined;
-      disabled?: boolean | undefined;
-      iconRadius?: string | undefined;
-      missingIconLiteralKey?: keyof T | undefined;
-      placeholder?: string | undefined;
-      nullValueName?: string | undefined;
-      enableClear?: boolean | undefined;
-      suggestionsWidth?: string | undefined;
-      id?: string | undefined;
-      modelValue?: T[K] | undefined;
-    }
-  ) => DefineComponent<
+  export const SingleSelect: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
       'select': [value: T | null]
       'create': [value: string]
@@ -382,15 +355,7 @@ declare module 'luna' {
       step?: number | undefined
       modelValue?: number | undefined
     }, {}, {}, SlotsType<{}>>;
-  export const SortableList: <T extends Option<ID>>(
-    props: {
-      modelValue: T[];
-      showIcons?: boolean | undefined;
-      removable?: boolean | undefined;
-      emitsOnly?: boolean | undefined;
-      busy?: boolean | undefined;
-    }
-  ) => DefineComponent<
+  export const SortableList: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
       'moved': [optionId: T["id"], prevOptionId: T["id"]]
       'deleted': [option: T]
@@ -403,13 +368,7 @@ declare module 'luna' {
       emitsOnly?: boolean | undefined
       busy?: boolean | undefined
     }, {}, {}, SlotsType<{}>>;
-  export const SortableSelect: <T extends Option<ID>>(
-    props: {
-      showIcons?: boolean | undefined;
-      options: any;
-      modelValue?: T[] | undefined;
-    }
-  ) => DefineComponent<
+  export const SortableSelect: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
       'update': [_value: T[] | null]
       'update:modelValue': [value: T[] | undefined]
@@ -418,34 +377,13 @@ declare module 'luna' {
       options: any
       modelValue?: T[] | undefined
     }, {}, {}, SlotsType<{}>>;
-  export const SuggestionIconComponent: <T extends BaseOption>(
-    props: {
-      option: T;
-      missingIconLiteralKey: keyof T;
-      iconRadius?: string | undefined;
-    }
-  ) => DefineComponent<
+  export const SuggestionIconComponent: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {}, string, {
       option: T
       missingIconLiteralKey: keyof T
       iconRadius?: string | undefined
     }, {}, {}, SlotsType<{}>>;
-  export const SuggestionsComponent: <T extends BaseOption>(
-    props: {
-      suggestions: T[];
-      showIcons?: boolean | undefined;
-      term?: string | undefined;
-      field?: HTMLElement | undefined;
-      tag?: string | null | undefined;
-      valueKey: keyof T;
-      suggestionKey?: keyof T | ((item: T) => string) | undefined;
-      cropSuggestions: boolean;
-      iconRadius?: string | undefined;
-      missingIconLiteralKey?: keyof T | undefined;
-      width?: string | undefined;
-      tagLabel?: ((term: string) => string) | undefined;
-    }
-  ) => DefineComponent<
+  export const SuggestionsComponent: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
       'select': [value: T]
       'hide': []
@@ -518,6 +456,7 @@ declare module 'luna' {
   export const $notify: NotifyComponentInterface
   export const projectService: ProjectService
   export const issueTypeService: IssueTypeService
+  export const queryService: QueryService
   export const RouteNames: {
         home: "home",
         dashboard: "dashboard",
@@ -964,6 +903,31 @@ declare module 'luna' {
       [key: string]: any;
   }
   export type IconType = typeof IconType[keyof typeof IconType];
+  export interface QsFormData {
+      searchers: Array<QuerySearcherDto>,
+      sorters: Array<QuerySorterDto>,
+      functions: Array<QueryFunctionDto>,
+  }
+  export interface QuerySearcherDto {
+      id: string,
+      name: string,
+      nameQs: string,
+      valueType: string,
+      allowedOperators: Array<QueryOperator>,
+      supportBasicSearch: boolean,
+  }
+  export type QueryOperator = '=' | '!=' | '~' | '!~' | 'is' | 'not is' | '>' | '>=' | '<' | '<=';
+  export interface QuerySorterDto {
+      id: string,
+      name: string,
+      label: string,
+  }
+  export interface QueryFunctionDto {
+      functionName: string,
+      value: string,
+      list: boolean,
+      valueType: string
+  }
   export interface ImageItem {
     id: number,
     name: string,
@@ -1410,7 +1374,6 @@ declare module 'luna' {
       sourceIssueKeys?: Array<String>
       targetIssueKeys?: Array<String>
   }
-  export type QueryOperator = '=' | '!=' | '~' | '!~' | 'is' | 'not is' | '>' | '>=' | '<' | '<=';
   export interface QueryParseError {
       line: number,
       position: number,
@@ -1424,26 +1387,6 @@ declare module 'luna' {
   export interface ClauseValue {
       value: string,
       displayValue: string,
-  }
-  export interface QueryFunctionDto {
-      functionName: string,
-      list: boolean,
-      valueType: string,
-      clauseValueType: string,
-      minimumRequiredArguments: boolean,
-  }
-  export interface QuerySearcherDto {
-      id: string,
-      name: string,
-      nameQs: string,
-      valueType: string,
-      allowedOperators: Array<QueryOperator>,
-      supportBasicSearch: boolean,
-  }
-  export interface QuerySorterDto {
-      id: string,
-      name: string,
-      label: string,
   }
   export interface SortRepresentationDto {
       id: string,
@@ -1899,6 +1842,14 @@ declare module 'luna' {
     createSchema: (name?: string | null, description?: string | null, issueTypes?: Array<number>) => Promise<AxiosResponse<IssueTypeSchemaDto>>
     updateSchema: (id: number, name?: string | null, description?: string | null, issueTypes?: Array<number>) => Promise<AxiosResponse<IssueTypeSchemaDto>>
     deleteSchema: (id: number) => Promise<AxiosResponse<DeleteResult>>
+  }
+  export interface QueryService {
+    parseQuery: (qs: string) => Promise<AxiosResponse<ParseResult>>
+    getQsData: () => Promise<AxiosResponse<QsFormData>>
+    getSuggestions: (fieldName: string, term: string | null, excludes: Array<string>) => Promise<AxiosResponse<Array<ClauseValue>>>
+    getSuggestionsForType: (valueType: string, term: string | null, excludes: Array<string>) => Promise<AxiosResponse<Array<ClauseValue>>>
+    transformQuery: (qs: string) => Promise<AxiosResponse<QueryRepresentation>>
+    transformSearcher: (fieldId: string, params: any) => Promise<AxiosResponse<SearcherRepresentation>>
   }
   export interface ShareEntryDto  {
       users: Array<UserValueDto>;
