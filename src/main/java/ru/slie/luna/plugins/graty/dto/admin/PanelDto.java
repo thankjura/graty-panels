@@ -1,4 +1,4 @@
-package ru.slie.luna.plugins.graty.dto;
+package ru.slie.luna.plugins.graty.dto.admin;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import ru.slie.luna.plugins.graty.Constants;

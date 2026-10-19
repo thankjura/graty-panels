@@ -6,7 +6,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.slie.luna.db.query.DeleteResult;
 import ru.slie.luna.exception.ValidateException;
 import ru.slie.luna.permission.GlobalPermissionManager;
-import ru.slie.luna.plugins.graty.dto.PanelDto;
+import ru.slie.luna.plugins.graty.dto.admin.PanelDto;
 import ru.slie.luna.plugins.graty.mapper.PanelDtoMapper;
 import ru.slie.luna.plugins.graty.panel.Panel;
 import ru.slie.luna.plugins.graty.panel.PanelManager;

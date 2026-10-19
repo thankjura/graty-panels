@@ -2,8 +2,8 @@ package ru.slie.luna.plugins.graty.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.slie.luna.db.SearchResultList;
-import ru.slie.luna.plugins.graty.dto.PanelDto;
-import ru.slie.luna.plugins.graty.dto.PanelValueDto;
+import ru.slie.luna.plugins.graty.dto.admin.PanelDto;
+import ru.slie.luna.plugins.graty.dto.admin.PanelValueDto;
 import ru.slie.luna.plugins.graty.panel.Panel;
 import ru.slie.luna.search.SearchResult;
 import ru.slie.luna.user.UserManager;

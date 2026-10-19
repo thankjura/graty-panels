@@ -1,4 +1,4 @@
-package ru.slie.luna.plugins.graty.dto;
+package ru.slie.luna.plugins.graty.dto.admin;
 
 import ru.slie.luna.plugins.graty.panel.Panel;
 

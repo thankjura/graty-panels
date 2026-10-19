@@ -61,11 +61,11 @@ public class PanelManager {
         return wrapNullable(activeDocManager.getById(PanelEntity.class, id));
     }
 
-    public List<Panel> getForContext(Long projectId, Long issueTypeId) {
+    public List<Panel> getForContext(IssueContext issueContext) {
         FindOptions option = new FindOptions().sort("priority");
         return activeDocManager.query(PanelEntity.class)
-                       .filter(Filters.eq("projectIds", projectId),
-                               Filters.eq("issueTypeIds", issueTypeId))
+                       .filter(Filters.eq("projectIds", issueContext.getProjectId()),
+                               Filters.eq("issueTypeIds", issueContext.getIssueTypeId()))
                        .list(option)
                        .stream()
                        .map(this::wrap)
