@@ -1,4 +1,4 @@
-package ru.slie.luna.plugins.graty.dto;
+package ru.slie.luna.plugins.graty.dto.panel.issue;
 
 import ru.slie.luna.issue.Issue;
 

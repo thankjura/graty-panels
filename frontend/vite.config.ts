@@ -31,6 +31,7 @@ export default defineConfig({
     lib: {
       entry: [
       	resolve(import.meta.dirname, 'src/views/admin/GratyPanelsView.vue'),
+      	resolve(import.meta.dirname, 'src/views/admin/GratyRendersView.vue'),
       	resolve(import.meta.dirname, 'src/views/issue/GratyIssuePanelView.vue'),
       ],
       formats: ['es'],

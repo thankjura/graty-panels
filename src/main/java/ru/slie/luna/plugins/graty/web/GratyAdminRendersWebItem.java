@@ -8,16 +8,16 @@ import ru.slie.luna.web.WebItem;
 import java.util.Map;
 
 @Component
-public class GratyAdminPanelWebItem implements WebItem {
+public class GratyAdminRendersWebItem implements WebItem {
     private final I18nResolver i18n;
 
-    public GratyAdminPanelWebItem(I18nResolver i18n) {
+    public GratyAdminRendersWebItem(I18nResolver i18n) {
         this.i18n = i18n;
     }
 
     @Override
     public String getId() {
-        return "graty-panel-list";
+        return "graty-render-list";
     }
 
     @Override
@@ -37,12 +37,12 @@ public class GratyAdminPanelWebItem implements WebItem {
 
     @Override
     public String getName() {
-        return i18n.getText("graty.web.item.admin.panels.label");
+        return i18n.getText("graty.web.item.admin.renders.label");
     }
 
     @Override
     public String getRouteName() {
-        return "adminGratyPanels";
+        return "adminGratyRenders";
     }
 
     @Override

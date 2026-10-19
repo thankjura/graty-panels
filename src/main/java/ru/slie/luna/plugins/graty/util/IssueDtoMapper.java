@@ -3,7 +3,7 @@ package ru.slie.luna.plugins.graty.util;
 import org.springframework.stereotype.Component;
 import ru.slie.luna.db.SearchResultList;
 import ru.slie.luna.issue.Issue;
-import ru.slie.luna.plugins.graty.dto.GratyIssueDto;
+import ru.slie.luna.plugins.graty.dto.panel.issue.GratyIssueDto;
 import ru.slie.luna.search.SearchResult;
 
 import java.util.ArrayList;

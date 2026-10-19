@@ -1,4 +1,5 @@
 import type { SearchQuery, UserValueDto } from "luna";
+import type { PanelRenderValueDto } from "@/interfaces/render.ts";
 
 export interface PanelValueDto {
   id: number,
@@ -15,6 +16,7 @@ export interface PanelDto extends PanelValueDto {
   qs: string,
   projectIds: Array<number>,
   issueTypeIds: Array<number>,
+  render: PanelRenderValueDto,
 }
 
 export interface PanelSearchRequest extends SearchQuery {

@@ -1,9 +1,9 @@
 package ru.slie.luna.plugins.graty.db;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 import ru.slie.luna.regolith.ActiveDocEntity;
 
@@ -14,6 +14,7 @@ import java.util.Set;
 @Table(name = "panels")
 public class PanelEntity extends ActiveDocEntity {
     private String name;
+    private String description;
     private String displayName;
     @Column(columnDefinition = "TEXT")
     private String qs;
@@ -32,10 +33,21 @@ public class PanelEntity extends ActiveDocEntity {
     @Column(name = "issue_type_ids", columnDefinition = "bigint[]")
     private Long[] issueTypeIds;
 
+    @ManyToOne
+    @JoinColumn(name = "render_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private PanelRenderEntity render;
+
     public PanelEntity() {}
 
-    public PanelEntity(Long authorId, String name, String displayName, String qs, Integer priority) {
+    public PanelEntity(Long authorId,
+                       String name,
+                       String description,
+                       String displayName,
+                       String qs,
+                       Integer priority) {
         this.name = name;
+        this.description = description;
         this.displayName = displayName;
         this.qs = qs;
         this.authorId = authorId;
@@ -47,6 +59,7 @@ public class PanelEntity extends ActiveDocEntity {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -143,5 +156,21 @@ public class PanelEntity extends ActiveDocEntity {
         } else {
             this.issueTypeIds = issue_typeIds.toArray(new Long[0]);
         }
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public PanelRenderEntity getRender() {
+        return render;
+    }
+
+    public void setRender(PanelRenderEntity render) {
+        this.render = render;
     }
 }

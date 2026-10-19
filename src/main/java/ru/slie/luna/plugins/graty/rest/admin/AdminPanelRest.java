@@ -10,8 +10,8 @@ import ru.slie.luna.plugins.graty.dto.admin.PanelDto;
 import ru.slie.luna.plugins.graty.mapper.PanelDtoMapper;
 import ru.slie.luna.plugins.graty.panel.Panel;
 import ru.slie.luna.plugins.graty.panel.PanelManager;
-import ru.slie.luna.plugins.graty.rest.request.PanelRequest;
-import ru.slie.luna.plugins.graty.rest.request.SearchTermRequest;
+import ru.slie.luna.plugins.graty.rest.admin.request.PanelRequest;
+import ru.slie.luna.plugins.graty.rest.request.SearchPanelsRequest;
 import ru.slie.luna.search.SearchResult;
 import ru.slie.luna.security.AuthenticationContext;
 import ru.slie.luna.user.User;
@@ -38,7 +38,7 @@ public class AdminPanelRest {
     }
 
     @GetMapping({"/", ""})
-    public SearchResult<PanelDto> search(SearchTermRequest request) {
+    public SearchResult<PanelDto> search(SearchPanelsRequest request) {
         User user = authenticationContext.getCurrentUser();
         if (!globalPermissionManager.hasAdminPerms(user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);

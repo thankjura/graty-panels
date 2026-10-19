@@ -1,9 +1,10 @@
-package ru.slie.luna.plugins.graty.rest.request;
+package ru.slie.luna.plugins.graty.rest.admin.request;
 
 import java.util.Set;
 
 public class PanelRequest {
     private String name;
+    private String description;
     private String displayName;
     private String qs;
     private Set<Long> projectIds;
@@ -32,5 +33,9 @@ public class PanelRequest {
 
     public Integer getPriority() {
         return priority;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

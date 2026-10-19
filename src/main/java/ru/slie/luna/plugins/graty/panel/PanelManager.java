@@ -2,16 +2,17 @@ package ru.slie.luna.plugins.graty.panel;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
-import ru.slie.luna.db.SearchResultList;
+import ru.slie.luna.db.SearchResultImpl;
 import ru.slie.luna.db.filter.Filters;
 import ru.slie.luna.db.query.DeleteResult;
 import ru.slie.luna.db.query.FindOptions;
 import ru.slie.luna.db.query.Query;
 import ru.slie.luna.exception.ValidateException;
 import ru.slie.luna.issue.IssueContext;
+import ru.slie.luna.issue.field.FieldManager;
 import ru.slie.luna.locale.I18nResolver;
 import ru.slie.luna.plugins.graty.db.PanelEntity;
-import ru.slie.luna.plugins.graty.rest.request.PanelRequest;
+import ru.slie.luna.plugins.graty.rest.admin.request.PanelRequest;
 import ru.slie.luna.regolith.ActiveDocManager;
 import ru.slie.luna.search.SearchResult;
 import ru.slie.luna.user.User;
@@ -28,15 +29,18 @@ import java.util.Optional;
 public class PanelManager {
     private final ActiveDocManager activeDocManager;
     private final I18nResolver i18n;
+    private final FieldManager fieldManager;
 
     public PanelManager(ActiveDocManager activeDocManager,
-                        I18nResolver i18n) {
+                        I18nResolver i18n,
+                        FieldManager fieldManager) {
         this.activeDocManager = activeDocManager;
         this.i18n = i18n;
+        this.fieldManager = fieldManager;
     }
 
     private Panel wrap(PanelEntity entity) {
-        return new Panel(entity);
+        return new Panel(entity, fieldManager);
     }
 
     private Optional<Panel> wrapNullable(PanelEntity entity) {
@@ -53,6 +57,9 @@ public class PanelManager {
             exception.addError("name", i18n.getText("graty.field.name.required"));
         }
 
+        if (entity.getRender() == null) {
+            exception.addError("render", i18n.getText("graty.field.render.required"));
+        }
 
         exception.raise();
     }
@@ -96,15 +103,17 @@ public class PanelManager {
             query.filter(Filters.in("issueTypeIds", params.issueTypeIds()));
         }
 
-        Long total = query.count();
-        FindOptions option = new FindOptions().sort("priority").skip(params.getSkip()).limit(params.getLimit());
-        List<Panel> out = query.list(option).stream().map(this::wrap).toList();
-        return new SearchResultList<>(total, out, params);
+        FindOptions options = new FindOptions().sort("priority").skip(params.getSkip()).limit(params.getLimit());
+        return new SearchResultImpl<>(query, params, options, this::wrap);
     }
 
     public Panel create(User author, PanelRequest request) throws ValidateException {
-        // TODO: validate
-        PanelEntity entity = new PanelEntity(author.getId(), request.getName(), request.getDisplayName(), request.getQs(), request.getPriority());
+        PanelEntity entity = new PanelEntity(author.getId(),
+                request.getName(),
+                request.getDescription(),
+                request.getDisplayName(),
+                request.getQs(),
+                request.getPriority());
         entity.setProjectIds(request.getProjectIds());
         entity.setIssueTypeIds(request.getIssueTypeIds());
         validate(entity);
@@ -128,7 +137,7 @@ public class PanelManager {
         entity.setUpdated(LocalDateTime.now());
         validate(entity);
         activeDocManager.save(entity);
-        panel.update(entity);
+        panel.update(entity, fieldManager);
     }
 
     public void patch(User updater, Panel panel, Map<String, Object> request) throws ValidateException {
@@ -155,7 +164,7 @@ public class PanelManager {
         entity.setUpdated(LocalDateTime.now());
         validate(entity);
         activeDocManager.save(entity);
-        panel.update(entity);
+        panel.update(entity, fieldManager);
     }
 
     public DeleteResult delete(Panel panel) {

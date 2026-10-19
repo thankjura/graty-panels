@@ -1,6 +1,7 @@
 package ru.slie.luna.plugins.graty.panel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import ru.slie.luna.issue.field.FieldManager;
 import ru.slie.luna.plugins.graty.Constants;
 import ru.slie.luna.plugins.graty.db.PanelEntity;
 
@@ -21,12 +22,13 @@ public class Panel {
     private Long authorId;
     private Long updaterId;
     private boolean disabled;
+    private PanelRender render;
 
-    public Panel(PanelEntity entity) {
-        update(entity);
+    public Panel(PanelEntity entity, FieldManager fieldManager) {
+        update(entity, fieldManager);
     }
 
-    public void update(PanelEntity entity) {
+    public void update(PanelEntity entity, FieldManager fieldManager) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.qs = entity.getQs();
@@ -39,6 +41,11 @@ public class Panel {
         this.authorId = entity.getAuthorId();
         this.updaterId = entity.getUpdaterId();
         this.disabled = Objects.requireNonNullElse(entity.getDisabled(), false);
+        if (entity.getRender() != null) {
+            this.render = new PanelRender(entity.getRender(), fieldManager);
+        } else {
+            this.render = null;
+        }
     }
 
     public Long getId() {
@@ -89,5 +96,9 @@ public class Panel {
 
     public boolean isDisabled() {
         return disabled;
+    }
+
+    public PanelRender getRender() {
+        return render;
     }
 }

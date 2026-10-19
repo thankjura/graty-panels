@@ -1,5 +1,6 @@
-package ru.slie.luna.plugins.graty.dto;
+package ru.slie.luna.plugins.graty.dto.panel;
 
+import ru.slie.luna.plugins.graty.dto.panel.issue.GratyIssueDto;
 import ru.slie.luna.plugins.graty.panel.Panel;
 import ru.slie.luna.search.SearchResult;
 

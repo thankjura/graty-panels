@@ -15,9 +15,13 @@ resources:
     type: css
     path: frontend/frontend.css
 routes:
-  - routeName: adminGratyPanels # Unique route name, use it in WebItem
+  - routeName: adminGratyPanels
     routePath: panels
-    component: frontend/GratyPanelsView.js # Path to compiled component
+    component: frontend/GratyPanelsView.js
+    parent: admin
+  - routeName: adminGratyRenders
+    routePath: panels
+    component: frontend/GratyRendersView.js
     parent: admin
 scanPackages:
   - ru.slie.luna.plugins.graty # Scan packages for auto-inject components
@@ -32,9 +36,12 @@ webSections:
     name: Graty admin section
     className: ru.slie.luna.plugins.graty.web.GratyAdminSection
 webItems:
-  - key: GratyAdminPanelWebItem
-    name: Demo web item
-    className: ru.slie.luna.plugins.graty.web.GratyAdminPanelWebItem
+  - key: GratyAdminPanelsWebItem
+    name: Admin panels web item
+    className: ru.slie.luna.plugins.graty.web.GratyAdminPanelsWebItem
+  - key: GratyAdminRendersWebItem
+    name: Admin renders web item
+    className: ru.slie.luna.plugins.graty.web.GratyAdminRendersWebItem
 webPanels:
   - key: GratyWebPanel
     name: Graty web panel

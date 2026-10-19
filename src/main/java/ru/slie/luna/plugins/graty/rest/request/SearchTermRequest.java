@@ -1,26 +1,14 @@
 package ru.slie.luna.plugins.graty.rest.request;
 
-import ru.slie.luna.plugins.graty.panel.PanelSearchParams;
-
-import java.util.Set;
+import ru.slie.luna.search.SearchParams;
 
 public class SearchTermRequest {
     private String term;
-    private Set<Long> projectIds;
-    private Set<Long> issueTypeIds;
     private Integer page;
     private Integer limit;
 
     public String getTerm() {
         return term;
-    }
-
-    public Set<Long> getProjectIds() {
-        return projectIds;
-    }
-
-    public Set<Long> getIssueTypeIds() {
-        return issueTypeIds;
     }
 
     public Integer getPage() {
@@ -37,24 +25,12 @@ public class SearchTermRequest {
         return limit;
     }
 
-    public PanelSearchParams getSearchParams() {
-        return PanelSearchParams
-                       .forPage(getPage(), getLimit())
-                       .term(getTerm())
-                       .projectIds(getProjectIds())
-                       .issueTypeIds(getIssueTypeIds());
+    public SearchParams getSearchParams() {
+        return SearchParams.forPage(getPage(), getLimit());
     }
 
     public void setTerm(String term) {
         this.term = term;
-    }
-
-    public void setProjectIds(Set<Long> projectIds) {
-        this.projectIds = projectIds;
-    }
-
-    public void setIssueTypeIds(Set<Long> issueTypeIds) {
-        this.issueTypeIds = issueTypeIds;
     }
 
     public void setPage(Integer page) {
