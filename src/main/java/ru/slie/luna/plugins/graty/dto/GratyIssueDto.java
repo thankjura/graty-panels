@@ -2,14 +2,14 @@ package ru.slie.luna.plugins.graty.dto;
 
 import ru.slie.luna.issue.Issue;
 
-public class IssueDto {
+public class GratyIssueDto {
     private final Long id;
     private final String key;
     private final String summary;
     private final StatusDto status;
     private final PriorityDto priority;
 
-    public IssueDto(Issue issue) {
+    public GratyIssueDto(Issue issue) {
         this.id = issue.getId();
         this.key = issue.getKey();
         this.summary = issue.getSummary();

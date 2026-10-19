@@ -1,6 +1,6 @@
 import type { PriorityValueDto, StatusValueDto } from "luna";
 
-export interface IssueDto {
+export interface GratyIssueDto {
   id: number,
   key: string,
   summary: string,
@@ -11,7 +11,7 @@ export interface IssueDto {
 export interface IssuePanelDto {
   id: number,
   name: string,
-  issues: Array<IssueDto>,
+  issues: Array<GratyIssueDto>,
   limit: number,
   total: number,
 }

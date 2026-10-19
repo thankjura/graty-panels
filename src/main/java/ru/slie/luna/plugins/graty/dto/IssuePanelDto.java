@@ -1,6 +1,7 @@
 package ru.slie.luna.plugins.graty.dto;
 
 import ru.slie.luna.plugins.graty.panel.Panel;
+import ru.slie.luna.search.SearchResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public class IssuePanelDto {
     private final Long id;
     private final String name;
-    private final List<IssueDto> issues = new ArrayList<>();
+    private final List<GratyIssueDto> issues = new ArrayList<>();
     private final int limit;
     private Long total;
 
@@ -38,13 +39,13 @@ public class IssuePanelDto {
         return total;
     }
 
-    public List<IssueDto> getIssues() {
+    public List<GratyIssueDto> getIssues() {
         return issues;
     }
 
-    public void setIssues(List<IssueDto> issues, long total) {
+    public void setIssues(SearchResult<GratyIssueDto> result) {
         this.issues.clear();
-        this.issues.addAll(issues);
-        this.total = total;
+        this.issues.addAll(result.getResults());
+        this.total = result.getTotal();
     }
 }

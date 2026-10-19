@@ -114,7 +114,7 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const PagePaginator: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'setPage': [_page: number]
+      'setPage'(_page: number): void
     }, 'setPage', {
       busy?: boolean | undefined
       compact?: boolean | undefined
@@ -130,7 +130,7 @@ declare module 'luna' {
       hide: () => void
       active: boolean
     }, {}, {}, {}, {}, {}, {
-      'hide': []
+      'hide'(): void
     }, 'hide', {
       closeButton?: boolean | undefined
       prefferedAlign?: ALIGN[] | undefined
@@ -145,8 +145,8 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const TogglePanel: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'toggle': [_state: boolean]
-      'show': []
+      'toggle'(_state: boolean): void
+      'show'(): void
     }, 'toggle' | 'show', {
       hideActions?: boolean | undefined
       initState?: boolean | undefined
@@ -171,7 +171,7 @@ declare module 'luna' {
       show: () => void
       hide: () => void
     }, {}, {}, {}, {}, {}, {
-      'closed': []
+      'closed'(): void
     }, 'closed', {
       busy?: boolean | undefined
       showClose?: boolean | undefined
@@ -212,7 +212,7 @@ declare module 'luna' {
     }>>;
   export const DropDownLayer: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'clicked': [_option: DropDownOption, _event: MouseEvent]
+      'clicked'(_option: DropDownOption, _event: MouseEvent): void
     }, 'clicked', {
       maxWidth?: number | undefined
       zIndex?: number | undefined
@@ -229,9 +229,9 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const CheckBoxesComponent: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'select': [value: T]
-      'remove': [value: string | number]
-      'update:modelValue': [value: (string | number)[] | undefined]
+      'select'(value: T): void
+      'remove'(value: string | number): void
+      'update:modelValue'(value: (string | number)[] | undefined): void
     }, 'select' | 'remove' | 'update:modelValue', {
       optionGroups: OptionsGroup<T>[]
       valueKey?: keyof T | undefined
@@ -245,11 +245,11 @@ declare module 'luna' {
     {},{
       show: (colorValue: string, elementValue: HTMLElement) => void
     }, {}, {}, {}, {}, {}, {
-      'update': [_color: string]
+      'update'(_color: string): void
     }, 'update', {}, {}, {}, SlotsType<{}>>;
   export const ColorPickerInput: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'update:modelValue': [value: string | undefined]
+      'update:modelValue'(value: string | undefined): void
     }, 'update:modelValue', {
       modelValue?: string | undefined
     }, {}, {}, SlotsType<{
@@ -259,7 +259,7 @@ declare module 'luna' {
     {},{
       layer: HTMLDivElement | null
     }, {}, {}, {}, {}, {}, {
-      'update:modelValue': [value: any]
+      'update:modelValue'(value: any): void
     }, 'update:modelValue', {
       modelValue?: any
       field?: HTMLElement | undefined
@@ -270,7 +270,7 @@ declare module 'luna' {
     }>>;
   export const DateTimePicker: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'update:modelValue': [value: string | undefined]
+      'update:modelValue'(value: string | undefined): void
     }, 'update:modelValue', {
       withTime?: boolean | undefined
       disabled?: boolean | undefined
@@ -279,17 +279,17 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const IconSelector: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'update:modelValue': [value: string | undefined]
+      'update:modelValue'(value: string | undefined): void
     }, 'update:modelValue', {
       modelValue?: string | undefined
       type: IconType
     }, {}, {}, SlotsType<{}>>;
   export const MultiSelect: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'select': [value: T]
-      'remove': [value: T[K]]
-      'create': [value: string]
-      'update:modelValue': [value: T[K][] | undefined]
+      'select'(value: T): void
+      'remove'(value: T[K]): void
+      'create'(value: string): void
+      'update:modelValue'(value: T[K][] | undefined): void
     }, 'select' | 'remove' | 'create' | 'update:modelValue', {
       options: any
       modelData?: T[] | undefined
@@ -307,8 +307,8 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const QsInput: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'update:modelValue': [value: string | undefined]
-      'update:error': [value: string | undefined]
+      'update:modelValue'(value: string | undefined): void
+      'update:error'(value: string | undefined): void
     }, 'update:modelValue' | 'update:error', {
       disabled?: boolean | undefined
       maxResult?: number | undefined
@@ -322,9 +322,9 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const SingleSelect: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'select': [value: T | null]
-      'create': [value: string]
-      'update:modelValue': [value: T[K] | undefined]
+      'select'(value: T | null): void
+      'create'(value: string): void
+      'update:modelValue'(value: T[K] | undefined): void
     }, 'select' | 'create' | 'update:modelValue', {
       options: any
       modelData?: T | undefined
@@ -348,7 +348,7 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const SliderTrack: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'update:modelValue': [value: number | undefined]
+      'update:modelValue'(value: number | undefined): void
     }, 'update:modelValue', {
       min?: number | undefined
       max?: number | undefined
@@ -357,10 +357,10 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const SortableList: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'moved': [optionId: T["id"], prevOptionId: T["id"]]
-      'deleted': [option: T]
-      'update': [value: T[] | null]
-      'update:modelValue': [value: T[] | undefined]
+      'moved'(optionId: T["id"], prevOptionId: T["id"]): void
+      'deleted'(option: T): void
+      'update'(value: T[] | null): void
+      'update:modelValue'(value: T[] | undefined): void
     }, 'moved' | 'deleted' | 'update' | 'update:modelValue', {
       modelValue: T[]
       showIcons?: boolean | undefined
@@ -370,8 +370,8 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const SortableSelect: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'update': [_value: T[] | null]
-      'update:modelValue': [value: T[] | undefined]
+      'update'(_value: T[] | null): void
+      'update:modelValue'(value: T[] | undefined): void
     }, 'update' | 'update:modelValue', {
       showIcons?: boolean | undefined
       options: any
@@ -385,9 +385,9 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const SuggestionsComponent: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'select': [value: T]
-      'hide': []
-      'create': [value: string]
+      'select'(value: T): void
+      'hide'(): void
+      'create'(value: string): void
     }, 'select' | 'hide' | 'create', {
       suggestions: T[]
       showIcons?: boolean | undefined
@@ -404,7 +404,7 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const MarkdownEditor: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'update:modelValue': [value: string | undefined]
+      'update:modelValue'(value: string | undefined): void
     }, 'update:modelValue', {
       modelValue?: string | undefined
     }, {}, {}, SlotsType<{}>>;
@@ -433,7 +433,7 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const ToggleComponent: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'update:modelValue': [value: boolean | undefined]
+      'update:modelValue'(value: boolean | undefined): void
     }, 'update:modelValue', {
       disabled?: boolean | undefined
       busy?: boolean | undefined
@@ -443,8 +443,8 @@ declare module 'luna' {
     }, {}, {}, SlotsType<{}>>;
   export const SortableTable: DefineComponent<
     {},{}, {}, {}, {}, {}, {}, {
-      'updated': [_event: SortableEvent]
-      'changed': [_event: SortableEvent]
+      'updated'(_event: SortableEvent): void
+      'changed'(_event: SortableEvent): void
     }, 'updated' | 'changed', {
       group?: string | undefined
     }, {}, {}, SlotsType<{
