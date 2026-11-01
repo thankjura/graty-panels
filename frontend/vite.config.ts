@@ -1,22 +1,13 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
-import pluginExternal from "vite-plugin-external";
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+import { lunaExternalGlobals } from './luna-external-globals.ts';
 
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
   plugins: [
-    pluginExternal({
-      externals: {
-        'luna': '__LUNA_COMPONENTS__',
-        'vue': 'Vue',
-        'axios': 'axios',
-        'sortablejs': 'Sortable',
-        'chart.js': 'ChartJs',
-        'vue-router': 'VueRouter',
-      }
-    }),
+    lunaExternalGlobals(),
     vue()
   ],
   resolve: {
