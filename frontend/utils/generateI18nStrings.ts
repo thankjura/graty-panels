@@ -4,7 +4,7 @@ import * as path from "path";
 const TARGET = path.join('.', 'src', 'locales', 'messages.ts');
 const SOURCE_DIR = path.join('.', 'src');
 const FILE_MASK = new RegExp(".*\\.(vue|ts)");
-const REGEX = new RegExp("\\$i18n\\.(?<valueType>[tp])\\(([\'\"])(?<message>.+?)\\2", 'g');
+const REGEX = new RegExp("\\$i18n\\.(?<type>[tp])\\(([\'\"])(?<message>.+?)\\2", 'g');
 
 const TARGET_DIR = path.dirname(TARGET);
 
@@ -38,7 +38,7 @@ const parseLine = (filename: string, line: string, lineNum: number) => {
     for (const match of matches) {
         if (!match.groups) continue;
 
-        const type = match.groups['valueType'];
+        const type = match.groups['type'];
         const msg = match.groups['message'];
         const data = messagesMap[msg];
         if (data) {
@@ -68,6 +68,10 @@ const fn = (filename: string) => {
 
 findFiles(SOURCE_DIR, fn);
 
+const escapeMessage = (value: string) => value
+    .replaceAll('\\', '\\\\')
+    .replaceAll('"', '\\"');
+
 const writeFile = (filePath: string, existsMessages?: {[key: string]: string}) => {
     const writer = fs.createWriteStream(filePath, {
         flags: 'w'
@@ -89,9 +93,9 @@ const writeFile = (filePath: string, existsMessages?: {[key: string]: string}) =
         }
         let translate = existsMessages[msgObj.key];
         if (translate) {
-            writer.write("  \"" + msgObj.key + "\": \"" + translate + "\",\n");
+            writer.write("  \"" + escapeMessage(msgObj.key) + "\": \"" + escapeMessage(translate) + "\",\n");
         } else {
-            writer.write("  \"" + msgObj.key + "\": \"\",\n");
+            writer.write("  \"" + escapeMessage(msgObj.key) + "\": \"\",\n");
         }
     }
 

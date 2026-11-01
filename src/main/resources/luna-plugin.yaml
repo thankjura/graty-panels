@@ -20,7 +20,7 @@ routes:
     component: frontend/GratyPanelsView.js
     parent: admin
   - routeName: adminGratyRenders
-    routePath: panels
+    routePath: renders
     component: frontend/GratyRendersView.js
     parent: admin
 scanPackages:
@@ -31,6 +31,7 @@ restPackages:
       - ru.slie.luna.plugins.graty.rest
 activeDocs:
   - ru.slie.luna.plugins.graty.db.PanelEntity
+  - ru.slie.luna.plugins.graty.db.PanelRenderEntity
 webSections:
   - key: GratyAdminSection
     name: Graty admin section

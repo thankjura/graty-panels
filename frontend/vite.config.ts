@@ -12,7 +12,6 @@ export default defineConfig({
         'luna': '__LUNA_COMPONENTS__',
         'vue': 'Vue',
         'axios': 'axios',
-        'I18N': 'I18N',
         'sortablejs': 'Sortable',
         'chart.js': 'ChartJs',
         'vue-router': 'VueRouter',

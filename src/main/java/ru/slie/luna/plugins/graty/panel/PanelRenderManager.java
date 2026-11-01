@@ -1,5 +1,6 @@
 package ru.slie.luna.plugins.graty.panel;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 import ru.slie.luna.db.SearchResultImpl;
 import ru.slie.luna.db.filter.Filters;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class PanelRenderManager {
     private final ActiveDocManager activeDocManager;
     private final FieldManager fieldManager;
