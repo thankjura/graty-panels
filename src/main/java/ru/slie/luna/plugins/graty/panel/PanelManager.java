@@ -12,6 +12,7 @@ import ru.slie.luna.issue.IssueContext;
 import ru.slie.luna.issue.field.FieldManager;
 import ru.slie.luna.locale.I18nResolver;
 import ru.slie.luna.plugins.graty.db.PanelEntity;
+import ru.slie.luna.plugins.graty.db.PanelRenderEntity;
 import ru.slie.luna.plugins.graty.rest.admin.request.PanelRequest;
 import ru.slie.luna.regolith.ActiveDocManager;
 import ru.slie.luna.search.SearchResult;
@@ -20,9 +21,13 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @Transactional
@@ -49,6 +54,22 @@ public class PanelManager {
         }
 
         return Optional.of(wrap(entity));
+    }
+
+    /**
+     * @return render entity or null when renderId is null
+     * @throws ValidateException when the render does not exist
+     */
+    private PanelRenderEntity findRender(Long renderId) throws ValidateException {
+        if (renderId == null) {
+            return null;
+        }
+
+        PanelRenderEntity render = activeDocManager.getById(PanelRenderEntity.class, renderId);
+        if (render == null) {
+            throw new ValidateException("render", i18n.getText("graty.field.render.not_found"));
+        }
+        return render;
     }
 
     private void validate(PanelEntity entity) throws ValidateException {
@@ -116,6 +137,8 @@ public class PanelManager {
                 request.getPriority());
         entity.setProjectIds(request.getProjectIds());
         entity.setIssueTypeIds(request.getIssueTypeIds());
+        entity.setRender(findRender(request.getRenderId()));
+        entity.setDisabled(Boolean.TRUE.equals(request.getDisabled()));
         validate(entity);
         activeDocManager.save(entity);
         return wrap(entity);
@@ -133,6 +156,10 @@ public class PanelManager {
         entity.setPriority(request.getPriority());
         entity.setProjectIds(request.getProjectIds());
         entity.setIssueTypeIds(request.getIssueTypeIds());
+        entity.setRender(findRender(request.getRenderId()));
+        if (request.getDisabled() != null) {
+            entity.setDisabled(request.getDisabled());
+        }
         entity.setUpdaterId(updater.getId());
         entity.setUpdated(LocalDateTime.now());
         validate(entity);
@@ -157,6 +184,7 @@ public class PanelManager {
                 case "issueTypeIds" -> entity.setIssueTypeIds(mapper.convertValue(entry.getValue(), new TypeReference<>() {}));
                 case "projectIds" -> entity.setProjectIds(mapper.convertValue(entry.getValue(), new TypeReference<>() {}));
                 case "disabled" -> entity.setDisabled(mapper.convertValue(entry.getValue(), Boolean.class));
+                case "renderId" -> entity.setRender(findRender(mapper.convertValue(entry.getValue(), Long.class)));
             }
         }
 
@@ -165,6 +193,51 @@ public class PanelManager {
         validate(entity);
         activeDocManager.save(entity);
         panel.update(entity, fieldManager);
+    }
+
+    /**
+     * Binds panels with the given names to the project.
+     *
+     * @return names of panels that were found in this system
+     */
+    public Set<String> addProjectToPanels(Collection<String> panelNames, Long projectId) {
+        if (panelNames.isEmpty()) {
+            return Set.of();
+        }
+
+        Set<String> found = new HashSet<>();
+        List<PanelEntity> changed = new ArrayList<>();
+        for (PanelEntity entity : activeDocManager.query(PanelEntity.class).filter(Filters.in("name", panelNames)).list()) {
+            found.add(entity.getName());
+            if (!entity.getProjectIds().contains(projectId)) {
+                Set<Long> projectIds = new HashSet<>(entity.getProjectIds());
+                projectIds.add(projectId);
+                entity.setProjectIds(projectIds);
+                changed.add(entity);
+            }
+        }
+
+        if (!changed.isEmpty()) {
+            activeDocManager.saveAll(changed);
+        }
+        return found;
+    }
+
+    /**
+     * Unbinds all panels from the project.
+     */
+    public void removeProjectFromPanels(Long projectId) {
+        List<PanelEntity> changed = new ArrayList<>();
+        for (PanelEntity entity : activeDocManager.query(PanelEntity.class).filter(Filters.eq("projectIds", projectId)).list()) {
+            Set<Long> projectIds = new HashSet<>(entity.getProjectIds());
+            projectIds.remove(projectId);
+            entity.setProjectIds(projectIds);
+            changed.add(entity);
+        }
+
+        if (!changed.isEmpty()) {
+            activeDocManager.saveAll(changed);
+        }
     }
 
     public DeleteResult delete(Panel panel) {

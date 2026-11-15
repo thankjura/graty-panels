@@ -17,6 +17,8 @@ export interface PanelDto extends PanelValueDto {
   projectIds: Array<number>,
   issueTypeIds: Array<number>,
   render: PanelRenderValueDto,
+  /** request only: id of the render to use */
+  renderId?: number,
 }
 
 export interface PanelSearchRequest extends SearchQuery {

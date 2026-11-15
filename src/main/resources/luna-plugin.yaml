@@ -43,6 +43,10 @@ webItems:
   - key: GratyAdminRendersWebItem
     name: Admin renders web item
     className: ru.slie.luna.plugins.graty.web.GratyAdminRendersWebItem
+projectImportParticipants:
+  - key: GratyProjectImportParticipant
+    name: Graty project import participant
+    className: ru.slie.luna.plugins.graty.imports.GratyProjectImportParticipant
 webPanels:
   - key: GratyWebPanel
     name: Graty web panel

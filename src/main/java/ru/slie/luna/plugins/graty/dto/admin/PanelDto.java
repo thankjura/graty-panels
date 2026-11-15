@@ -17,6 +17,7 @@ public class PanelDto extends PanelValueDto {
     private final String qs;
     private final Set<Long> projectIds;
     private final Set<Long> issueTypeIds;
+    private final PanelRenderValueDto render;
 
     public PanelDto(Panel panel, UserManager userManager) {
         super(panel);
@@ -27,6 +28,7 @@ public class PanelDto extends PanelValueDto {
         this.qs = panel.getQs();
         this.projectIds = panel.getProjectIds();
         this.issueTypeIds = panel.getIssueTypeIds();
+        this.render = PanelRenderValueDto.from(panel.getRender());
     }
 
     @JsonFormat(pattern = Constants.DATE_TIME_FORMAT)
@@ -57,5 +59,9 @@ public class PanelDto extends PanelValueDto {
 
     public Set<Long> getIssueTypeIds() {
         return issueTypeIds;
+    }
+
+    public PanelRenderValueDto getRender() {
+        return render;
     }
 }

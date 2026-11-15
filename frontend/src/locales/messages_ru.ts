@@ -1,4 +1,10 @@
 export const messages = {
+  // src/components/dialog/PanelDialog.vue
+  "Render": "Рендер",
+
+  // src/components/dialog/PanelDialog.vue
+  "Failed load renders": "Не удалось загрузить рендеры",
+
   // src/components/dialog/PanelDialog.vue:47
   "Failed load panel": "",
 

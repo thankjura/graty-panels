@@ -4,6 +4,7 @@ import {
   BaseDialog,
   type Errors,
   MultiSelect,
+  SingleSelect,
   ButtonBusy,
   type ProjectValueDto,
   type IssueTypeValueDto
@@ -12,6 +13,8 @@ import type { PanelDto, PanelValueDto } from "@/interfaces/panel.ts";
 import { type PropType, ref, useTemplateRef } from "vue";
 import type { ComponentExposed } from "vue-component-type-helpers";
 import { adminPanelService } from "@/service/adminPanelService.ts";
+import { adminRenderService } from "@/service/adminRenderService.ts";
+import type { PanelRenderValueDto } from "@/interfaces/render.ts";
 import { $i18n } from "@/utils/i18n.ts";
 import GratyQsInput from "@/components/form/GratyQsInput.vue";
 
@@ -35,7 +38,16 @@ const busy = ref(false);
 const panel = ref<Partial<PanelDto>>({});
 const dialog = useTemplateRef<ComponentExposed<typeof BaseDialog>>('dialog');
 const errors = ref<Errors>({});
+const renders = ref<Array<PanelRenderValueDto>>([]);
+const renderId = ref<number>(null);
 
+const loadRenders = () => {
+  adminRenderService.search({limit: -1}).then((data) => {
+    renders.value = data.data.results;
+  }).catch(() => {
+    $notify.error($i18n.t("Failed load renders"));
+  });
+}
 
 const hide = () => {
   dialog.value.hide();
@@ -43,15 +55,22 @@ const hide = () => {
 
 const create = () => {
   panel.value = {};
+  renderId.value = null;
+  errors.value = {};
+  loadRenders();
   dialog.value.show();
 }
 
 const edit = (panelValue: PanelValueDto) => {
   busy.value = true;
   panel.value = {id: panelValue.id, name: panelValue.name, displayName: panelValue.displayName};
+  renderId.value = null;
+  errors.value = {};
+  loadRenders();
   dialog.value.show();
   adminPanelService.getById(panelValue.id).then((data) => {
     panel.value = data.data;
+    renderId.value = data.data.render?.id ?? null;
   }).catch(() => {
     $notify.error($i18n.t("Failed load panel"));
   }).finally(() => {
@@ -72,6 +91,7 @@ const submit = () => {
       issueTypeIds: panel.value.issueTypeIds,
       disabled: panel.value.disabled,
       qs: panel.value.qs,
+      renderId: renderId.value,
     }).then((data) => {
       emits('updated', data.data);
       hide();
@@ -91,6 +111,7 @@ const submit = () => {
       issueTypeIds: panel.value.issueTypeIds,
       disabled: panel.value.disabled,
       qs: panel.value.qs,
+      renderId: renderId.value,
     }).then((data) => {
       emits('created', data.data);
       hide();
@@ -129,6 +150,11 @@ defineExpose({
           <label for="panel-display-name">{{ $i18n.t("Display name") }}</label>
           <input id="panel-display-name" class="full-width" type="text" v-model="panel.displayName">
           <div class="error" v-if="errors['displayName']">{{ errors['displayName'] }}</div>
+        </div>
+        <div class="field-group">
+          <label for="panel-render">{{ $i18n.t("Render") }}</label>
+          <SingleSelect id="panel-render" class="full-width" v-model="renderId" :options="renders" :model-data="panel.render"></SingleSelect>
+          <div class="error" v-if="errors['render']">{{ errors['render'] }}</div>
         </div>
         <div class="field-group">
           <label for="panel-qs">{{ $i18n.t("Query string") }}</label>

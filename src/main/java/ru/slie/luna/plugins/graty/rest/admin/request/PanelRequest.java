@@ -10,6 +10,8 @@ public class PanelRequest {
     private Set<Long> projectIds;
     private Set<Long> issueTypeIds;
     private Integer priority;
+    private Long renderId;
+    private Boolean disabled;
 
     public String getName() {
         return name;
@@ -37,5 +39,13 @@ public class PanelRequest {
 
     public String getDescription() {
         return description;
+    }
+
+    public Long getRenderId() {
+        return renderId;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
     }
 }
