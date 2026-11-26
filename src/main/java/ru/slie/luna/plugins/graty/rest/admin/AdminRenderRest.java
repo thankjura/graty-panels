@@ -9,7 +9,6 @@ import ru.slie.luna.issue.field.FieldManager;
 import ru.slie.luna.issue.field.IssueField;
 import ru.slie.luna.permission.GlobalPermissionManager;
 import ru.slie.luna.plugins.graty.dto.admin.PanelRenderDto;
-import ru.slie.luna.plugins.graty.dto.admin.PanelRenderValueDto;
 import ru.slie.luna.plugins.graty.mapper.PanelDtoMapper;
 import ru.slie.luna.plugins.graty.panel.PanelRender;
 import ru.slie.luna.plugins.graty.panel.PanelRenderManager;
@@ -45,7 +44,7 @@ public class AdminRenderRest {
     }
 
     @GetMapping({"/", ""})
-    public SearchResult<PanelRenderValueDto> search(SearchTermRequest request) {
+    public SearchResult<PanelRenderDto> search(SearchTermRequest request) {
         User user = authenticationContext.getCurrentUser();
         if (!globalPermissionManager.hasAdminPerms(user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -63,7 +62,7 @@ public class AdminRenderRest {
 
         List<IssueField> fields = fieldManager.getByIds(request.getFields());
 
-        return PanelRenderDto.from(renderManager.create(request.getName(), request.getDescription(), fields, request.getLimit()));
+        return PanelRenderDto.from(renderManager.create(request.getName(), request.getDescription(), fields, request.getLimit(), request.getShowActions()));
     }
 
     @GetMapping("/{id}")
@@ -99,7 +98,7 @@ public class AdminRenderRest {
         PanelRender render = getRender(renderId);
 
         List<IssueField> fields = fieldManager.getByIds(request.getFields());
-        renderManager.update(render, render.getName(), render.getDescription(), fields, request.getLimit());
+        renderManager.update(render, request.getName(), request.getDescription(), fields, request.getLimit(), request.getShowActions());
         return PanelRenderDto.from(render);
     }
 

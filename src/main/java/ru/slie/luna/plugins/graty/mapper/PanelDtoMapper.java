@@ -3,7 +3,7 @@ package ru.slie.luna.plugins.graty.mapper;
 import org.springframework.stereotype.Component;
 import ru.slie.luna.db.SearchResultList;
 import ru.slie.luna.plugins.graty.dto.admin.PanelDto;
-import ru.slie.luna.plugins.graty.dto.admin.PanelRenderValueDto;
+import ru.slie.luna.plugins.graty.dto.admin.PanelRenderDto;
 import ru.slie.luna.plugins.graty.dto.admin.PanelValueDto;
 import ru.slie.luna.plugins.graty.panel.Panel;
 import ru.slie.luna.plugins.graty.panel.PanelRender;
@@ -35,9 +35,9 @@ public class PanelDtoMapper {
                 searchResult.searchParams());
     }
 
-    public SearchResult<PanelRenderValueDto> mapRenders(SearchResult<PanelRender> searchResult) {
+    public SearchResult<PanelRenderDto> mapRenders(SearchResult<PanelRender> searchResult) {
         return new SearchResultList<>(searchResult.getTotal(),
-                searchResult.getResults().stream().map(PanelRenderValueDto::from).toList(),
+                searchResult.getResults().stream().map(PanelRenderDto::from).toList(),
                 searchResult.searchParams());
     }
 

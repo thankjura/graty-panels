@@ -8,11 +8,13 @@ import java.util.Objects;
 public class PanelRenderDto extends PanelRenderValueDto {
     private final List<PanelFieldDto> fields;
     private final int limit;
+    private final boolean showActions;
 
     public PanelRenderDto(PanelRender render) {
         super(render);
         this.fields = render.getFields().stream().map(PanelFieldDto::from).filter(Objects::nonNull).toList();
-        this.limit = render.getLimit();
+        this.limit = Objects.requireNonNullElse(render.getLimit(), 10);
+        this.showActions = render.isShowActions();
     }
 
     public static PanelRenderDto from(PanelRender render) {
@@ -29,5 +31,9 @@ public class PanelRenderDto extends PanelRenderValueDto {
 
     public int getLimit() {
         return limit;
+    }
+
+    public boolean isShowActions() {
+        return showActions;
     }
 }

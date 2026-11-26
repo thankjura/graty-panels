@@ -5,6 +5,7 @@ import ru.slie.luna.issue.field.IssueField;
 import ru.slie.luna.plugins.graty.db.PanelRenderEntity;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PanelRender {
     private final long id;
@@ -12,6 +13,7 @@ public class PanelRender {
     private String description;
     private List<IssueField> fields;
     private Integer limit;
+    private boolean showActions;
 
     public PanelRender(PanelRenderEntity entity, FieldManager fieldManager) {
         this.id = entity.getId();
@@ -21,8 +23,9 @@ public class PanelRender {
     public void update(PanelRenderEntity entity, FieldManager fieldManager) {
         this.name = entity.getName();
         this.description = entity.getDescription();
-        this.fields = fieldManager.getByIds(entity.getFields());
+        this.fields = fieldManager.getByIds(entity.getFields()).stream().filter(IssueField::isValid).toList();
         this.limit = entity.getLimit();
+        this.showActions = Objects.requireNonNullElse(entity.getShowActions(), false);
     }
 
     public String getName() {
@@ -39,6 +42,10 @@ public class PanelRender {
 
     public Integer getLimit() {
         return limit;
+    }
+
+    public boolean isShowActions() {
+        return showActions;
     }
 
     public long getId() {

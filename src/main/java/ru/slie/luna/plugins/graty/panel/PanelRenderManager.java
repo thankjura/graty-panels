@@ -73,8 +73,8 @@ public class PanelRenderManager {
     }
 
 
-    public PanelRender create(String name, String description, List<IssueField> fields, Integer limit) throws ValidateException {
-        PanelRenderEntity entity = new PanelRenderEntity(name, description, fields.stream().map(IssueField::getId).toList(), limit);
+    public PanelRender create(String name, String description, List<IssueField> fields, Integer limit, Boolean showActions) throws ValidateException {
+        PanelRenderEntity entity = new PanelRenderEntity(name, description, fields.stream().map(IssueField::getId).toList(), limit, Boolean.TRUE.equals(showActions));
         validate(entity);
         activeDocManager.save(entity);
         return wrap(entity);
@@ -99,7 +99,7 @@ public class PanelRenderManager {
         return new SearchResultImpl<>(query, searchParams, options, this::wrap);
     }
 
-    public void update(PanelRender render, String name, String description, List<IssueField> fields, Integer limit) throws ValidateException {
+    public void update(PanelRender render, String name, String description, List<IssueField> fields, Integer limit, Boolean showActions) throws ValidateException {
         PanelRenderEntity entity = activeDocManager.getById(PanelRenderEntity.class, render.getId());
         if (entity == null) {
             return;
@@ -109,6 +109,7 @@ public class PanelRenderManager {
         entity.setDescription(description);
         entity.setFields(fields.stream().map(IssueField::getId).toList());
         entity.setLimit(limit);
+        entity.setShowActions(Boolean.TRUE.equals(showActions));
 
         validate(entity);
         activeDocManager.save(entity);
@@ -136,6 +137,7 @@ public class PanelRenderManager {
                     entity.setFields(issueFields.stream().map(IssueField::getId).toList());
                 }
                 case "limit" -> entity.setLimit(mapper.convertValue(entry.getValue(), Integer.class));
+                case "showActions" -> entity.setShowActions(mapper.convertValue(entry.getValue(), Boolean.class));
             }
         }
 

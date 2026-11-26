@@ -1,20 +1,19 @@
 package ru.slie.luna.plugins.graty.dto.panel.issue;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import ru.slie.luna.issue.Issue;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GratyIssueDto {
     private final Long id;
     private final String key;
-    private final String summary;
-    private final StatusDto status;
-    private final PriorityDto priority;
+    private final Map<String, Object> fieldValues = new HashMap<>();
 
     public GratyIssueDto(Issue issue) {
         this.id = issue.getId();
         this.key = issue.getKey();
-        this.summary = issue.getSummary();
-        this.status = StatusDto.from(issue.getStatus());
-        this.priority = PriorityDto.from(issue.getPriority());
     }
 
     public Long getId() {
@@ -25,15 +24,12 @@ public class GratyIssueDto {
         return key;
     }
 
-    public String getSummary() {
-        return summary;
+    public void setFieldValue(String fieldId, Object value) {
+        fieldValues.put(fieldId, value);
     }
 
-    public StatusDto getStatus() {
-        return status;
-    }
-
-    public PriorityDto getPriority() {
-        return priority;
+    @JsonAnyGetter
+    public Map<String, Object> getFieldValues() {
+        return fieldValues;
     }
 }

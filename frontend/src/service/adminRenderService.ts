@@ -1,10 +1,10 @@
 import { client } from "@/utils/client.ts";
 import type { DeleteResult, SearchQuery, SearchResult } from "luna";
-import type { PanelRenderDto, PanelRenderRequest, PanelRenderValueDto } from "@/interfaces/render.ts";
+import type { PanelRenderDto, PanelRenderRequest } from "@/interfaces/render.ts";
 
 class AdminRenderService {
   search(request: SearchQuery) {
-    return client.get<SearchResult<PanelRenderValueDto>>('/graty/admin/renders/', {params: request});
+    return client.get<SearchResult<PanelRenderDto>>('/graty/admin/renders/', {params: request});
   }
 
   getById(renderId: number) {

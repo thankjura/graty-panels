@@ -20,9 +20,10 @@ public class PanelRenderEntity extends ActiveDocEntity {
     @Column(name = "field_ids", columnDefinition = "text[]")
     private String[] fields;
     private Integer limit;
+    private Boolean showActions;
 
     public PanelRenderEntity() {}
-    public PanelRenderEntity(String name, String description, List<String> fields, Integer limit) {
+    public PanelRenderEntity(String name, String description, List<String> fields, Integer limit, Boolean showActions) {
         this.name = name;
         this.description = description;
         if (fields != null) {
@@ -31,6 +32,7 @@ public class PanelRenderEntity extends ActiveDocEntity {
             this.fields = new String[0];
         }
         this.limit = limit;
+        this.showActions = showActions;
     }
 
     public String getName() {
@@ -70,5 +72,13 @@ public class PanelRenderEntity extends ActiveDocEntity {
 
     public void setLimit(Integer limit) {
         this.limit = limit;
+    }
+
+    public Boolean getShowActions() {
+        return showActions;
+    }
+
+    public void setShowActions(Boolean showActions) {
+        this.showActions = showActions;
     }
 }

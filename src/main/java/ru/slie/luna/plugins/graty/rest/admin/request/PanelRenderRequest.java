@@ -7,6 +7,7 @@ public class PanelRenderRequest {
     private String description;
     private List<String> fields;
     private Integer limit;
+    private Boolean showActions;
 
     public String getName() {
         return name;
@@ -38,5 +39,13 @@ public class PanelRenderRequest {
 
     public void setLimit(Integer limit) {
         this.limit = limit;
+    }
+
+    public Boolean getShowActions() {
+        return showActions;
+    }
+
+    public void setShowActions(Boolean showActions) {
+        this.showActions = showActions;
     }
 }
