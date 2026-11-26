@@ -22,6 +22,7 @@ import ru.slie.luna.plugins.graty.dto.panel.issue.GratyIssueDto;
 import ru.slie.luna.plugins.graty.panel.Panel;
 import ru.slie.luna.plugins.graty.panel.PanelManager;
 import ru.slie.luna.plugins.graty.panel.PanelRender;
+import ru.slie.luna.plugins.graty.panel.PanelRenderColumn;
 import ru.slie.luna.plugins.graty.util.GratyUtils;
 import ru.slie.luna.plugins.graty.util.IssueDtoMapper;
 import ru.slie.luna.search.SearchParams;
@@ -30,7 +31,9 @@ import ru.slie.luna.security.AuthenticationContext;
 import ru.slie.luna.user.User;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -68,12 +71,24 @@ public class IssuePanelRest {
         this.fieldManager = fieldManager;
     }
 
-    private List<IssueField> resolveFields(Panel panel) {
+    private List<PanelRenderColumn> resolveColumns(Panel panel) {
         PanelRender render = panel.getRender();
-        if (render != null && render.getFields() != null && !render.getFields().isEmpty()) {
-            return render.getFields();
+        if (render != null && render.getColumns() != null && !render.getColumns().isEmpty()) {
+            return render.getColumns();
         }
-        return fieldManager.getByIds(DEFAULT_FIELDS);
+        return fieldManager.getByIds(DEFAULT_FIELDS).stream()
+                .map(field -> new PanelRenderColumn(List.of(field), null, false, "left"))
+                .toList();
+    }
+
+    private List<IssueField> flattenFields(List<PanelRenderColumn> columns) {
+        Map<String, IssueField> unique = new LinkedHashMap<>();
+        for (PanelRenderColumn column : columns) {
+            for (IssueField field : column.getFields()) {
+                unique.putIfAbsent(field.getId(), field);
+            }
+        }
+        return List.copyOf(unique.values());
     }
 
     private int resolveLimit(Panel panel, Integer requestedLimit) {
@@ -107,9 +122,10 @@ public class IssuePanelRest {
         List<IssuePanelDto> panelDtos = new ArrayList<>();
         List<List<IssueField>> panelFields = new ArrayList<>();
         for (Panel panel : panels) {
-            List<IssueField> fields = resolveFields(panel);
+            List<PanelRenderColumn> columns = resolveColumns(panel);
+            List<IssueField> fields = flattenFields(columns);
             panelFields.add(fields);
-            panelDtos.add(new IssuePanelDto(panel, fields));
+            panelDtos.add(new IssuePanelDto(panel, columns, fields));
         }
 
         if (!panels.isEmpty()) {
@@ -138,7 +154,7 @@ public class IssuePanelRest {
         SearchParams params = SearchParams.forPage(safePage, safeLimit);
 
         User user = authenticationContext.getCurrentUser();
-        List<IssueField> fields = resolveFields(panel.get());
+        List<IssueField> fields = flattenFields(resolveColumns(panel.get()));
         return getIssues(panel.get(), issue, user, params, fields);
     }
 }

@@ -8,7 +8,7 @@ import {
   PagePaginator,
   type SearchQuery
 } from "luna";
-import type { PanelRenderDto } from "@/interfaces/render.ts";
+import type { PanelRenderColumnDto, PanelRenderDto } from "@/interfaces/render.ts";
 import DeletePanelRenderDialog from "@/components/dialog/DeletePanelRenderDialog.vue";
 import PanelRenderDialog from "@/components/dialog/PanelRenderDialog.vue";
 import { adminRenderService } from "@/service/adminRenderService.ts";
@@ -19,6 +19,22 @@ const renders = ref<Array<PanelRenderDto>>([]);
 const total = ref(0);
 const renderDialog = useTemplateRef<ComponentExposed<typeof PanelRenderDialog>>('renderDialog');
 const deleteRenderDialog = useTemplateRef<ComponentExposed<typeof DeletePanelRenderDialog>>('deleteRenderDialog');
+
+const renderColumns = (render: PanelRenderDto): Array<PanelRenderColumnDto> => {
+  if (render.columns && render.columns.length > 0) {
+    return render.columns;
+  }
+  return (render.fields ?? []).map((f): PanelRenderColumnDto => ({
+    fields: [f],
+    title: null,
+    hideHeader: false,
+    align: 'left',
+  }));
+};
+
+const formatColumnLabel = (col: PanelRenderColumnDto) => {
+  return col.fields.map((f) => f.name).join(' + ');
+};
 
 const search = (page?: number) => {
   const nextPage = page ?? query.value.page;
@@ -102,7 +118,7 @@ onMounted(() => {
           <thead>
             <tr>
               <th>{{ $i18n.t("Name/Description") }}</th>
-              <th>{{ $i18n.t("Fields") }}</th>
+              <th>{{ $i18n.t("Columns") }}</th>
               <th class="fit nowrap">{{ $i18n.t("Limit") }}</th>
               <th class="fit nowrap">{{ $i18n.t("Actions menu") }}</th>
               <th class="fit">{{ $i18n.t("Actions") }}</th>
@@ -117,12 +133,26 @@ onMounted(() => {
                 </div>
               </td>
               <td>
-                <div class="render-fields-tags" v-if="render.fields && render.fields.length">
-                  <span class="render-field-tag" v-for="field in render.fields" :key="field.id">
-                    {{ field.name }}
+                <div class="render-fields-tags" v-if="renderColumns(render).length">
+                  <span
+                    class="render-field-tag"
+                    :class="{ 'render-field-tag-combined': col.fields.length > 1 }"
+                    v-for="(col, idx) in renderColumns(render)"
+                    :key="idx"
+                    :title="col.hideHeader ? $i18n.t('No header') : (col.title || undefined)"
+                  >
+                    {{ formatColumnLabel(col) }}
+                    <span
+                      v-if="render.showHeader !== false && col.hideHeader"
+                      class="icon-eye-off render-col-hidden-icon"
+                      aria-hidden="true"
+                    ></span>
                   </span>
                 </div>
                 <span class="muted" v-else>—</span>
+                <div class="description" v-if="render.showHeader === false">
+                  {{ $i18n.t("Table header hidden") }}
+                </div>
               </td>
               <td class="fit nowrap">{{ render.limit }}</td>
               <td class="fit nowrap">
@@ -170,13 +200,24 @@ onMounted(() => {
   }
 
   .render-field-tag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     padding: 1px 7px;
     border-radius: 3px;
     border: 1px solid var(--border-color);
     background: var(--surface-alt-background);
     font-size: 90%;
     white-space: nowrap;
+
+    &.render-field-tag-combined {
+      border-color: var(--accent-background);
+    }
+  }
+
+  .render-col-hidden-icon {
+    font-size: 80%;
+    color: var(--muted-text-color);
   }
 
   .render-actions-enabled {

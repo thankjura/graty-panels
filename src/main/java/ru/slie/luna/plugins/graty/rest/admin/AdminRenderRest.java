@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.slie.luna.db.query.DeleteResult;
 import ru.slie.luna.exception.ValidateException;
-import ru.slie.luna.issue.field.FieldManager;
-import ru.slie.luna.issue.field.IssueField;
 import ru.slie.luna.permission.GlobalPermissionManager;
 import ru.slie.luna.plugins.graty.dto.admin.PanelRenderDto;
 import ru.slie.luna.plugins.graty.mapper.PanelDtoMapper;
@@ -18,7 +16,6 @@ import ru.slie.luna.search.SearchResult;
 import ru.slie.luna.security.AuthenticationContext;
 import ru.slie.luna.user.User;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,18 +26,15 @@ public class AdminRenderRest {
     private final AuthenticationContext authenticationContext;
     private final GlobalPermissionManager globalPermissionManager;
     private final PanelDtoMapper mapper;
-    private final FieldManager fieldManager;
 
     public AdminRenderRest(PanelRenderManager renderManager,
                            AuthenticationContext authenticationContext,
                            GlobalPermissionManager globalPermissionManager,
-                           PanelDtoMapper mapper,
-                           FieldManager fieldManager) {
+                           PanelDtoMapper mapper) {
         this.renderManager = renderManager;
         this.authenticationContext = authenticationContext;
         this.globalPermissionManager = globalPermissionManager;
         this.mapper = mapper;
-        this.fieldManager = fieldManager;
     }
 
     @GetMapping({"/", ""})
@@ -60,9 +54,7 @@ public class AdminRenderRest {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
-        List<IssueField> fields = fieldManager.getByIds(request.getFields());
-
-        return PanelRenderDto.from(renderManager.create(request.getName(), request.getDescription(), fields, request.getLimit(), request.getShowActions()));
+        return PanelRenderDto.from(renderManager.create(request));
     }
 
     @GetMapping("/{id}")
@@ -96,9 +88,7 @@ public class AdminRenderRest {
         }
 
         PanelRender render = getRender(renderId);
-
-        List<IssueField> fields = fieldManager.getByIds(request.getFields());
-        renderManager.update(render, request.getName(), request.getDescription(), fields, request.getLimit(), request.getShowActions());
+        renderManager.update(render, request);
         return PanelRenderDto.from(render);
     }
 

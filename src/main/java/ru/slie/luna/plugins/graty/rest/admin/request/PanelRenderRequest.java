@@ -1,13 +1,17 @@
 package ru.slie.luna.plugins.graty.rest.admin.request;
 
+import ru.slie.luna.plugins.graty.panel.PanelRenderColumnConfig;
+
 import java.util.List;
 
 public class PanelRenderRequest {
     private String name;
     private String description;
     private List<String> fields;
+    private List<PanelRenderColumnConfig> columns;
     private Integer limit;
     private Boolean showActions;
+    private Boolean showHeader;
 
     public String getName() {
         return name;
@@ -33,6 +37,14 @@ public class PanelRenderRequest {
         this.fields = fields;
     }
 
+    public List<PanelRenderColumnConfig> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<PanelRenderColumnConfig> columns) {
+        this.columns = columns;
+    }
+
     public Integer getLimit() {
         return limit;
     }
@@ -47,5 +59,13 @@ public class PanelRenderRequest {
 
     public void setShowActions(Boolean showActions) {
         this.showActions = showActions;
+    }
+
+    public Boolean getShowHeader() {
+        return showHeader;
+    }
+
+    public void setShowHeader(Boolean showHeader) {
+        this.showHeader = showHeader;
     }
 }

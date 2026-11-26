@@ -19,20 +19,30 @@ public class PanelRenderEntity extends ActiveDocEntity {
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "field_ids", columnDefinition = "text[]")
     private String[] fields;
+
+    @Column(name = "columns_config", columnDefinition = "TEXT")
+    private String columnsConfig;
+
     private Integer limit;
     private Boolean showActions;
+    private Boolean showHeader;
 
     public PanelRenderEntity() {}
-    public PanelRenderEntity(String name, String description, List<String> fields, Integer limit, Boolean showActions) {
+
+    public PanelRenderEntity(String name,
+                             String description,
+                             List<String> fields,
+                             String columnsConfig,
+                             Integer limit,
+                             Boolean showActions,
+                             Boolean showHeader) {
         this.name = name;
         this.description = description;
-        if (fields != null) {
-            this.fields = fields.toArray(new String[0]);
-        } else {
-            this.fields = new String[0];
-        }
+        setFields(fields);
+        this.columnsConfig = columnsConfig;
         this.limit = limit;
         this.showActions = showActions;
+        this.showHeader = showHeader;
     }
 
     public String getName() {
@@ -66,6 +76,14 @@ public class PanelRenderEntity extends ActiveDocEntity {
         }
     }
 
+    public String getColumnsConfig() {
+        return columnsConfig;
+    }
+
+    public void setColumnsConfig(String columnsConfig) {
+        this.columnsConfig = columnsConfig;
+    }
+
     public Integer getLimit() {
         return limit;
     }
@@ -80,5 +98,13 @@ public class PanelRenderEntity extends ActiveDocEntity {
 
     public void setShowActions(Boolean showActions) {
         this.showActions = showActions;
+    }
+
+    public Boolean getShowHeader() {
+        return showHeader;
+    }
+
+    public void setShowHeader(Boolean showHeader) {
+        this.showHeader = showHeader;
     }
 }
