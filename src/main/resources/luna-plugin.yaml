@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/thankjura/luna-schemas/refs/heads/master/luna-plugin.schema.json?v13
 
 key: ${project.groupId}.${project.artifactId} # Resolved from pom.xml
+routePrefix: graty
 name: ${project.name}
 version: ${project.version}
 description: "${project.description}"
